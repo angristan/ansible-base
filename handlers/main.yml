@@ -1,0 +1,6 @@
+---
+
+- name: unbound reload
+  service:
+    name: unbound
+    state: reloaded

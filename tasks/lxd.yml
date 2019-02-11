@@ -1,0 +1,4 @@
+- name: Set up SSH authorized keys
+  template:
+    src: ../templates/ssh/authorized_keys.j2
+    dest: /root/.ssh/authorized_keys

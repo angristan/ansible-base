@@ -1,0 +1,19 @@
+#!/bin/bash
+
+YELLOW="\033[1;33m"
+LIGHT_RED="\033[1;31m"
+NONE="\033[m"
+
+n=$(apt-get -qq --just-print dist-upgrade | cut -f 2 -d " " | sort -u | wc -l)
+if [[ $n -gt 0 ]]; then
+    printf $LIGHT_RED
+    printf "  You have %s packages waiting for upgrades." "$n"
+    printf $NONE"\n\n"
+fi
+
+n=$(apt-get -qq --just-print autoremove | cut -f 2 -d " " | sort -u | wc -l)
+if [[ $n -gt 0 ]]; then
+    printf $YELLOW
+    printf "  You have %s packages that were automatically installed and are not needed anymore." "$n"
+    printf $NONE"\n\n"
+fi
