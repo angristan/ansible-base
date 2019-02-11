@@ -52,6 +52,7 @@
       - pigz
       - uptimed
       - ethstatus
+      - ca-certificates
 
 - name: Set fish as the root shell
   user:
