@@ -66,27 +66,27 @@
 
 - name: Add dotfiles
   copy:
-    src: ../files/root/{{ item }}
-    dest: /root/
+    src: "root/{{ item }}"
+    dest: "/root/"
   with_items:
     - .config
 
 - name: Add dotfiles (template)
   copy:
-    src: ../templates/root/{{ item }}
-    dest: /root/
+    src: "root/{{ item }}"
+    dest: "/root/"
   with_items:
     - .config
 
 - name: Add sources.list
   template:
-    src: ../templates/etc/apt/sources.list.j2
-    dest: /etc/apt/sources.list
+    src: "etc/apt/sources.list.j2"
+    dest: "/etc/apt/sources.list"
 
 - name: Add rsyslog logrotate without delaycompress
   copy:
-    src: ../files/etc/logrotate.d/rsyslog
-    dest: /etc/logrotate.d/
+    src: "etc/logrotate.d/rsyslog"
+    dest: "/etc/logrotate.d/"
 
 - name: Install APT dependencies for MOTD
   apt:
@@ -101,8 +101,8 @@
 
 - name: Copy MOTD scripts
   copy:
-    src: ../files/etc/update-motd.d/{{ item }}
-    dest: /etc/update-motd.d
+    src: "etc/update-motd.d/{{ item }}"
+    dest: "/etc/update-motd.d"
     mode: +x
   with_items:
       - 10-hostname
@@ -112,4 +112,4 @@
 - name: Make sure /etc/motd is empty
   copy:
     content: ""
-    dest: /etc/motd
+    dest: "/etc/motd"
