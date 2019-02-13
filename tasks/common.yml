@@ -10,6 +10,12 @@
   timezone:
     name: Europe/Paris
 
+- name: Add sources.list
+  template:
+    src: "etc/apt/sources.list.j2"
+    dest: "/etc/apt/sources.list"
+  notify: update_apt_cache
+
 - name: Install basic packages
   apt:
     name:
@@ -77,11 +83,6 @@
     dest: "/root/"
   with_items:
     - .config
-
-- name: Add sources.list
-  template:
-    src: "etc/apt/sources.list.j2"
-    dest: "/etc/apt/sources.list"
 
 - name: Add rsyslog logrotate without delaycompress
   copy:
