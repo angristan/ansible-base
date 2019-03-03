@@ -3,7 +3,7 @@
 - import_tasks: common.yml
 
 - import_tasks: host.yml
-  when: inventory_hostname not in groups['lxd']
+  when: inventory_hostname in groups['host']
 
 - import_tasks: lxd.yml
   when: inventory_hostname in groups['lxd']
