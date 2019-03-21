@@ -1,6 +1,6 @@
 # Ansible "base" role
 
-[![CircleCI](https://circleci.com/gh/angristan/ansible-restic.svg?style=svg)](https://circleci.com/gh/angristan/ansible-restic)
+[![CircleCI](https://circleci.com/gh/angristan/ansible-base.svg?style=svg)](https://circleci.com/gh/angristan/ansible-base)
 
 This is a personal role that I apply on my servers to provide a "base" config.
 
