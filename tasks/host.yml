@@ -1,5 +1,10 @@
 ---
 
+- name: Add password to root user
+  user:
+    name: root
+    password: "{{ vault.root_password }}"
+
 - name: Add stanislas user
   user:
     name: stanislas

@@ -67,11 +67,6 @@
     name: root
     shell: /usr/bin/fish
 
-- name: Add password to root user
-  user:
-    name: root
-    password: "{{ vault.root_password }}"
-
 - name: Add dotfiles
   copy:
     src: "root/{{ item }}"
