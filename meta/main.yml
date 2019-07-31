@@ -1,0 +1,20 @@
+galaxy_info:
+  role_name: caddy
+  author: angristan
+  description: Ansible "base" role
+  license: MIT
+  min_ansible_version: 2.4
+
+  platforms:
+  - name: Debian
+    versions:
+    - all
+  - name: Ubuntu
+    versions:
+    - all
+
+  galaxy_tags:
+    - debian
+    - ubuntu
+
+dependencies: []
