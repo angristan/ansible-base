@@ -61,6 +61,7 @@
       - uptimed
       - ethstatus
       - ca-certificates
+      - logrotate
 
 - name: Set fish as the root shell
   user:
