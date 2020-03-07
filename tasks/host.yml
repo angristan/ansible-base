@@ -43,7 +43,7 @@
   copy:
     src: "etc/unbound/unbound.conf"
     dest: "/etc/unbound/"
-  notify: unbound reload
+  notify: unbound restart
 
 - name: Set DNS resolver to Unbound in DHCP config
   when: ansible_distribution == "Debian"

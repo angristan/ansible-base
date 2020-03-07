@@ -1,9 +1,9 @@
 ---
 
-- name: unbound reload
+- name: unbound restart
   service:
     name: unbound
-    state: reloaded
+    state: restarted
 
 - name: update_apt_cache
   apt:
