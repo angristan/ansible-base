@@ -62,6 +62,7 @@
       - ethstatus
       - ca-certificates
       - logrotate
+      - net-tools
 
 - name: Set fish as the root shell
   user:
@@ -104,7 +105,7 @@
   with_items:
       - 10-hostname
       - 20-sysinfo
-      - 30-apt
+      # - 30-apt
 
 - name: Make sure /etc/motd is empty
   copy:
