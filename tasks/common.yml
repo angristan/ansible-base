@@ -112,3 +112,22 @@
   copy:
     content: ""
     dest: "/etc/motd"
+
+- name: Install unbound
+  when: ansible_distribution == "Debian"
+  apt:
+    name: unbound
+
+- name: Add Unbound config
+  when: ansible_distribution == "Debian"
+  template:
+    src: "etc/unbound/unbound.conf.j2"
+    dest: "/etc/unbound/unbound.conf"
+  notify: unbound restart
+
+- name: Set DNS resolver to Unbound in DHCP config
+  when: ansible_distribution == "Debian"
+  lineinfile:
+    dest: /etc/dhcp/dhclient.conf
+    regexp: "^prepend domain-name-servers"
+    line: "prepend domain-name-servers 127.0.0.1;"

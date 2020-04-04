@@ -33,25 +33,6 @@
       - fail2ban
       - haveged
 
-- name: Install unbound
-  when: ansible_distribution == "Debian"
-  apt:
-    name: unbound
-
-- name: Add Unbound config
-  when: ansible_distribution == "Debian"
-  copy:
-    src: "etc/unbound/unbound.conf"
-    dest: "/etc/unbound/"
-  notify: unbound restart
-
-- name: Set DNS resolver to Unbound in DHCP config
-  when: ansible_distribution == "Debian"
-  lineinfile:
-    dest: /etc/dhcp/dhclient.conf
-    regexp: "^prepend domain-name-servers"
-    line: "prepend domain-name-servers 127.0.0.1;"
-
 - name: Set swappiness to 5
   sysctl:
     name: vm.swappiness

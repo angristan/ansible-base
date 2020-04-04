@@ -1,0 +1,18 @@
+include: "/etc/unbound/unbound.conf.d/*.conf"
+
+hide-identity: yes
+hide-version: yes
+use-caps-for-id: yes
+prefetch: yes
+
+{% if ansible_distribution_release == 'buster' %}
+tls-cert-bundle: /etc/ssl/certs/ca-certificates.crt
+
+forward-zone:
+  name: "."
+  forward-tls-upstream: yes
+  forward-addr: 2a07:a8c0::#{{ inventory_hostname }}-{{ nextdns_config_name }}.dns1.nextdns.io
+  forward-addr: 2a07:a8c1::#{{ inventory_hostname }}-{{ nextdns_config_name }}.dns2.nextdns.io
+  forward-addr: 45.90.28.0#{{ inventory_hostname }}-{{ nextdns_config_name }}.dns1.nextdns.io
+  forward-addr: 45.90.30.0#{{ inventory_hostname }}-{{ nextdns_config_name }}.dns2.nextdns.io
+{% endif %}
