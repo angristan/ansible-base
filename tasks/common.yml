@@ -62,6 +62,7 @@
       - ethstatus
       - ca-certificates
       - logrotate
+      - rsyslog
       - net-tools
 
 - name: Set fish as the root shell
@@ -82,9 +83,9 @@
     dest: /root/.config/fish/config.fish
 
 - name: Add rsyslog logrotate without delaycompress
-  copy:
-    src: "etc/logrotate.d/rsyslog"
-    dest: "/etc/logrotate.d/"
+  template:
+    src: "etc/logrotate.d/rsyslog.j2"
+    dest: "/etc/logrotate.d/rsyslog"
 
 - name: Install APT dependencies for MOTD
   apt:
