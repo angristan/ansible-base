@@ -32,6 +32,7 @@
     name:
       - fail2ban
       - haveged
+      - netdata
 
 - name: Set swappiness to 5
   sysctl:
