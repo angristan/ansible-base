@@ -4,6 +4,7 @@ hide-identity: yes
 hide-version: yes
 use-caps-for-id: yes
 prefetch: yes
+extended-statistics: yes
 
 {% if ansible_distribution_release == 'buster' %}
 tls-cert-bundle: /etc/ssl/certs/ca-certificates.crt
@@ -16,3 +17,6 @@ forward-zone:
   forward-addr: 45.90.28.0#{{ inventory_hostname }}-{{ nextdns_config_name }}.dns1.nextdns.io
   forward-addr: 45.90.30.0#{{ inventory_hostname }}-{{ nextdns_config_name }}.dns2.nextdns.io
 {% endif %}
+
+remote-control:
+  control-enable: yes
