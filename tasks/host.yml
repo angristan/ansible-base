@@ -34,9 +34,9 @@
       - haveged
       - netdata
 
-- name: Set swappiness to 5
+- name: Set swappiness to 0
   sysctl:
     name: vm.swappiness
-    value: 5
+    value: 0
     state: present
     reload: yes
