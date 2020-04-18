@@ -131,3 +131,8 @@
     dest: /etc/dhcp/dhclient.conf
     regexp: "^prepend domain-name-servers"
     line: "prepend domain-name-servers 127.0.0.1;"
+
+- name: Add vimrc
+  get_url:
+    url: https://raw.githubusercontent.com/wklken/vim-for-server/master/vimrc
+    dest: /root/.vimrc
