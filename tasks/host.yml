@@ -1,16 +1,15 @@
 ---
-
 - name: Add password to root user
   user:
     name: root
-    password: "{{ vault.root_password }}"
+    password: '{{ vault.root_password }}'
 
 - name: Add stanislas user
   user:
     name: stanislas
     groups: sudo
     shell: /usr/bin/fish
-    password: "{{ vault.stanislas_password }}"
+    password: '{{ vault.stanislas_password }}'
 
 - name: Creates /home/stanislas/.ssh/ directory
   file:
@@ -21,8 +20,8 @@
 
 - name: Set up SSH authorized keys
   template:
-    src: "ssh/authorized_keys.j2"
-    dest: "{{ item }}"
+    src: 'ssh/authorized_keys.j2'
+    dest: '{{ item }}'
   with_items:
     - /root/.ssh/authorized_keys
     - /home/stanislas/.ssh/authorized_keys
@@ -40,3 +39,11 @@
     value: 0
     state: present
     reload: yes
+
+- name: Configure private network interface
+  template:
+    src: 'etc/network/interfaces.d/priv.cfg.j2'
+    dest: '/etc/network/interfaces.d/priv.cfg'
+  when: private_network_address is defined
+  notify: network restart
+  tags: base.network

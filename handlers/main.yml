@@ -1,5 +1,4 @@
 ---
-
 - name: unbound restart
   service:
     name: unbound
@@ -8,3 +7,8 @@
 - name: update_apt_cache
   apt:
     update_cache: yes
+
+- name: network restart
+  service:
+    name: networking
+    state: restarted
