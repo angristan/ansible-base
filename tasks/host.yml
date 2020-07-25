@@ -47,3 +47,10 @@
   when: private_network_address is defined
   notify: network restart
   tags: base.network
+
+- name: Configure private network interface
+  template:
+    src: 'etc/udev/rules.d/75-persistent-net-generator.rules.j2'
+    dest: '/etc/udev/rules.d/75-persistent-net-generator.rules'
+  when: private_network_interface_mac is defined
+  tags: base.network
