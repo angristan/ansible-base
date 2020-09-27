@@ -1,7 +1,3 @@
 {% for key in ssh_keys %}
 {{ key }}
 {% endfor -%}
-
-{% if inventory_hostname in groups['lxd'] %}
-{{ host_ssh_key }}
-{% endif %}
