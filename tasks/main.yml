@@ -15,6 +15,7 @@
   template:
     src: 'etc/apt/sources.list.j2'
     dest: '/etc/apt/sources.list'
+    mode: 0644
   notify: update_apt_cache
 
 - name: Install basic packages
@@ -73,6 +74,7 @@
   copy:
     src: 'root/{{ item }}'
     dest: '/root/'
+    mode: 0775
   with_items:
     - .config
 
@@ -80,11 +82,13 @@
   template:
     src: root/.config/fish/config.fish.j2
     dest: /root/.config/fish/config.fish
+    mode: 0644
 
 - name: Add rsyslog logrotate without delaycompress
   template:
     src: 'etc/logrotate.d/rsyslog.j2'
     dest: '/etc/logrotate.d/rsyslog'
+    mode: 0644
 
 - name: Install APT dependencies for MOTD
   apt:
@@ -111,6 +115,7 @@
   copy:
     content: ''
     dest: '/etc/motd'
+    mode: 0644
 
 - name: Install unbound
   when: ansible_distribution == "Debian"
@@ -122,6 +127,7 @@
   template:
     src: 'etc/unbound/unbound.conf.j2'
     dest: '/etc/unbound/unbound.conf'
+    mode: 0644
   notify: unbound restart
 
 - name: Set DNS resolver to Unbound in DHCP config
@@ -154,11 +160,13 @@
     state: directory
     owner: stanislas
     group: stanislas
+    mode: 0700
 
 - name: Set up SSH authorized keys
   template:
     src: 'ssh/authorized_keys.j2'
     dest: '{{ item }}'
+    mode: 0600
   with_items:
     - /root/.ssh/authorized_keys
     - /home/stanislas/.ssh/authorized_keys
@@ -181,6 +189,7 @@
   template:
     src: 'etc/network/interfaces.d/priv.cfg.j2'
     dest: '/etc/network/interfaces.d/priv.cfg'
+    mode: 0644
   when: private_network_address is defined
   notify: network restart
   tags: base.network
@@ -189,5 +198,6 @@
   template:
     src: 'etc/udev/rules.d/75-persistent-net-generator.rules.j2'
     dest: '/etc/udev/rules.d/75-persistent-net-generator.rules'
+    mode: 0644
   when: private_network_interface_mac is defined
   tags: base.network
