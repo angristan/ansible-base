@@ -64,6 +64,7 @@
       - logrotate
       - rsyslog
       - net-tools
+      - rsync
 
 - name: Set fish as the root shell
   user:
