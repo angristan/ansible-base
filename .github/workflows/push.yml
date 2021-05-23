@@ -1,9 +1,9 @@
-name: ansible-lint
+name: Push workflow
 
-on: [push]
+on: push
 
 jobs:
-  build:
+  lint:
     runs-on: ubuntu-latest
     name: ansible-lint
     steps:
@@ -12,3 +12,30 @@ jobs:
       - run: pip install ansible ansible-lint
       - run: ansible-lint --version
       - run: ansible-lint .
+
+  commitlint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Lint Commit
+        uses: wagoid/commitlint-github-action@v3
+
+  release:
+    name: Publish new release
+    needs: [lint, commitlint]
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        run: npx semantic-release
