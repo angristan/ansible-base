@@ -12,5 +12,6 @@ Add this to your `requirements.yml`:
 
 ```yml
 - src: https://github.com/angristan/ansible-base
+  name: angristan.base
   version: vX.X.X
 ```
