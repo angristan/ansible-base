@@ -8,10 +8,14 @@ Feel free to inspire yourself from it.
 
 ## Usage
 
-Add this to your `requirements.yml`:
+Add this to `requirements.yml`:
 
 ```yml
 - src: https://github.com/angristan/ansible-base
   name: angristan.base
   version: vX.X.X
 ```
+
+## Author Information
+
+See my other Ansible roles at [angristan/ansible-roles](https://github.com/angristan/ansible-roles).
