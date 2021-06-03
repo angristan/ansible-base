@@ -66,6 +66,7 @@
       - net-tools
       - rsync
       - jq
+      - sysstat
 
 - name: Set fish as the root shell
   user:
