@@ -20,6 +20,7 @@
 
 - name: Install basic packages
   apt:
+    update_cache: true
     name:
       - fish
       - vim
