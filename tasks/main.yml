@@ -1,7 +1,7 @@
 ---
 - name: Setup locales
   locale_gen:
-    name: '{{ item }}'
+    name: "{{ item }}"
     state: present
   with_items:
     - en_US.UTF-8
@@ -13,8 +13,8 @@
 
 - name: Add sources.list
   template:
-    src: 'etc/apt/sources.list.j2'
-    dest: '/etc/apt/sources.list'
+    src: "etc/apt/sources.list.j2"
+    dest: "/etc/apt/sources.list"
     mode: 0644
   notify: update_apt_cache
 
@@ -68,6 +68,9 @@
       - rsync
       - jq
       - sysstat
+      - unattended-upgrades
+      - fail2ban
+      - haveged
 
 - name: Set fish as the root shell
   user:
@@ -76,8 +79,8 @@
 
 - name: Add dotfiles
   copy:
-    src: 'root/{{ item }}'
-    dest: '/root/'
+    src: "root/{{ item }}"
+    dest: "/root/"
     mode: 0775
   with_items:
     - .config
@@ -90,8 +93,8 @@
 
 - name: Add rsyslog logrotate without delaycompress
   template:
-    src: 'etc/logrotate.d/rsyslog.j2'
-    dest: '/etc/logrotate.d/rsyslog'
+    src: "etc/logrotate.d/rsyslog.j2"
+    dest: "/etc/logrotate.d/rsyslog"
     mode: 0644
 
 - name: Install APT dependencies for MOTD
@@ -107,8 +110,8 @@
 
 - name: Copy MOTD scripts
   copy:
-    src: 'etc/update-motd.d/{{ item }}'
-    dest: '/etc/update-motd.d'
+    src: "etc/update-motd.d/{{ item }}"
+    dest: "/etc/update-motd.d"
     mode: +x
   with_items:
     - 10-hostname
@@ -117,8 +120,8 @@
 
 - name: Make sure /etc/motd is empty
   copy:
-    content: ''
-    dest: '/etc/motd'
+    content: ""
+    dest: "/etc/motd"
     mode: 0644
 
 - name: Install unbound
@@ -129,8 +132,8 @@
 - name: Add Unbound config
   when: ansible_distribution == "Debian"
   template:
-    src: 'etc/unbound/unbound.conf.j2'
-    dest: '/etc/unbound/unbound.conf'
+    src: "etc/unbound/unbound.conf.j2"
+    dest: "/etc/unbound/unbound.conf"
     mode: 0644
   notify: unbound restart
 
@@ -138,8 +141,8 @@
   when: ansible_distribution == "Debian"
   lineinfile:
     dest: /etc/dhcp/dhclient.conf
-    regexp: '^prepend domain-name-servers'
-    line: 'prepend domain-name-servers 127.0.0.1;'
+    regexp: "^prepend domain-name-servers"
+    line: "prepend domain-name-servers 127.0.0.1;"
 
 - name: Add vimrc
   get_url:
@@ -149,14 +152,14 @@
 - name: Add password to root user
   user:
     name: root
-    password: '{{ vault.root_password }}'
+    password: "{{ vault.root_password }}"
 
 - name: Add stanislas user
   user:
     name: stanislas
-    groups: ['sudo']
+    groups: ["sudo"]
     shell: /usr/bin/fish
-    password: '{{ vault.stanislas_password }}'
+    password: "{{ vault.stanislas_password }}"
 
 - name: Creates /home/stanislas/.ssh/ directory
   file:
@@ -168,31 +171,30 @@
 
 - name: Set up SSH authorized keys
   template:
-    src: 'ssh/authorized_keys.j2'
-    dest: '{{ item }}'
+    src: "ssh/authorized_keys.j2"
+    dest: "{{ item }}"
     mode: 0600
   with_items:
     - /root/.ssh/authorized_keys
     - /home/stanislas/.ssh/authorized_keys
 
-- name: Install basic packages
-  apt:
-    name:
-      - fail2ban
-      - haveged
-      - netdata
-
 - name: Set swappiness to 0
   sysctl:
     name: vm.swappiness
-    value: '0'
+    value: "0"
     state: present
     reload: yes
 
+- name: Copy unattended-upgrades configuration
+  copy:
+    src: "etc/apt/apt.conf.d/50unattended-upgrades"
+    dest: "/etc/apt/apt.conf.d/50unattended-upgrades"
+    mode: 0644
+
 - name: Configure private network interface
   template:
-    src: 'etc/network/interfaces.d/priv.cfg.j2'
-    dest: '/etc/network/interfaces.d/priv.cfg'
+    src: "etc/network/interfaces.d/priv.cfg.j2"
+    dest: "/etc/network/interfaces.d/priv.cfg"
     mode: 0644
   when: private_network_address is defined
   notify: network restart
@@ -200,8 +202,8 @@
 
 - name: Configure private network interface
   template:
-    src: 'etc/udev/rules.d/75-persistent-net-generator.rules.j2'
-    dest: '/etc/udev/rules.d/75-persistent-net-generator.rules'
+    src: "etc/udev/rules.d/75-persistent-net-generator.rules.j2"
+    dest: "/etc/udev/rules.d/75-persistent-net-generator.rules"
     mode: 0644
   when: private_network_interface_mac is defined
   tags: base.network
