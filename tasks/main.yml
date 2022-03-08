@@ -187,9 +187,12 @@
 
 - name: Copy unattended-upgrades configuration
   copy:
-    src: "etc/apt/apt.conf.d/50unattended-upgrades"
-    dest: "/etc/apt/apt.conf.d/50unattended-upgrades"
+    src: "etc/apt/apt.conf.d/{{ item }}"
+    dest: "/etc/apt/apt.conf.d/{{ item }}"
     mode: 0644
+  with_items:
+    - "50unattended-upgrades"
+    - "20auto-upgrades"
 
 - name: Configure private network interface
   template:
