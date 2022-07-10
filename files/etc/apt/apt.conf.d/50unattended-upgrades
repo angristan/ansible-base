@@ -1,7 +1,7 @@
 // Unattended-Upgrade::Origins-Pattern controls which packages are
 // upgraded.
 //
-// Lines below have the format format is "keyword=value,...".  A
+// Lines below have the format is "keyword=value,...".  A
 // package will be upgraded only if the values in its metadata match
 // all the supplied keywords in a line.  (In other words, omitted
 // keywords are wild cards.) The keywords originate from the Release
@@ -30,6 +30,7 @@ Unattended-Upgrade::Origins-Pattern {
 //      "origin=Debian,codename=${distro_codename}-proposed-updates";
 //      "origin=Debian,codename=${distro_codename},label=Debian";
         "origin=Debian,codename=${distro_codename},label=Debian-Security";
+        "origin=Debian,codename=${distro_codename}-security,label=Debian-Security";
 
         // Archive or Suite based matching:
         // Note that this will silently match a different release after
@@ -49,7 +50,7 @@ Unattended-Upgrade::Origins-Pattern {
 // Python regular expressions, matching packages to exclude from upgrading
 Unattended-Upgrade::Package-Blacklist {
     // The following matches all packages starting with linux-
-// "linux-";
+//  "linux-";
 
     // Use $ to explicitely define the end of a package name. Without
     // the $, "libc6" would match all of them.
@@ -97,9 +98,11 @@ Unattended-Upgrade::MinimalSteps "true";
 // 'mailx' must be installed. E.g. "user@example.com"
 //Unattended-Upgrade::Mail "";
 
-// Set this value to "true" to get emails only on errors. Default
-// is to always send a mail if Unattended-Upgrade::Mail is set
-//Unattended-Upgrade::MailOnlyOnError "false";
+// Set this value to one of:
+//    "always", "only-on-error" or "on-change"
+// If this is not set, then any legacy MailOnlyOnError (boolean) value
+// is used to chose between "only-on-error" and "on-change"
+//Unattended-Upgrade::MailReport "on-change";
 
 // Remove unused automatically installed kernel-related packages
 // (kernel images, kernel headers and kernel version locked tools).
@@ -149,3 +152,18 @@ Unattended-Upgrade::Verbose "true";
 // Print debugging information both in unattended-upgrades and
 // in unattended-upgrade-shutdown
 // Unattended-Upgrade::Debug "false";
+
+// Allow package downgrade if Pin-Priority exceeds 1000
+// Unattended-Upgrade::Allow-downgrade "false";
+
+// When APT fails to mark a package to be upgraded or installed try adjusting
+// candidates of related packages to help APT's resolver in finding a solution
+// where the package can be upgraded or installed.
+// This is a workaround until APT's resolver is fixed to always find a
+// solution if it exists. (See Debian bug #711128.)
+// The fallback is enabled by default, except on Debian's sid release because
+// uninstallable packages are frequent there.
+// Disabling the fallback speeds up unattended-upgrades when there are
+// uninstallable packages at the expense of rarely keeping back packages which
+// could be upgraded or installed.
+// Unattended-Upgrade::Allow-APT-Mark-Fallback "true";

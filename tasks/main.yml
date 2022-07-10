@@ -1,6 +1,6 @@
 ---
 - name: Setup locales
-  locale_gen:
+  community.general.locale_gen:
     name: "{{ item }}"
     state: present
   with_items:
@@ -48,7 +48,6 @@
       - screen
       - vnstat
       - man-db
-      - python-pip
       - python3-pip
       - dnsutils
       - telnet
@@ -179,7 +178,7 @@
     - /home/stanislas/.ssh/authorized_keys
 
 - name: Set swappiness to 0
-  sysctl:
+  ansible.posix.sysctl:
     name: vm.swappiness
     value: "0"
     state: present

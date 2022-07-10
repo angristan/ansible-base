@@ -6,11 +6,7 @@
     notifempty
     compress
     postrotate
-{% if ansible_distribution == 'Ubuntu' or (ansible_distribution == 'Debian' and ansible_distribution_release == 'buster') %}
         /usr/lib/rsyslog/rsyslog-rotate
-{% else %}
-        invoke-rc.d rsyslog rotate
-{% endif %}
     endscript
 }
 
@@ -34,7 +30,6 @@
     compress
     sharedscripts
     postrotate
-        invoke-rc.d rsyslog rotate
+        /usr/lib/rsyslog/rsyslog-rotate
     endscript
 }
-
