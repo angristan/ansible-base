@@ -1,4 +1,10 @@
 ---
+- name: Install locale-gen
+  apt:
+    update_cache: true
+    name:
+      - locales
+
 - name: Setup locales
   community.general.locale_gen:
     name: "{{ item }}"
@@ -8,11 +14,11 @@
     - fr_FR.UTF-8
 
 - name: Set timezone to Europe/Paris
-  timezone:
+  community.general.timezone:
     name: Europe/Paris
 
 - name: Add sources.list
-  template:
+  ansible.builtin.template:
     src: "etc/apt/sources.list.j2"
     dest: "/etc/apt/sources.list"
     mode: 0644
@@ -70,14 +76,17 @@
       - unattended-upgrades
       - fail2ban
       - haveged
+      - gpg
+      - dirmngr
+      - gpg-agent
 
 - name: Set fish as the root shell
-  user:
+  ansible.builtin.user:
     name: root
     shell: /usr/bin/fish
 
 - name: Add dotfiles
-  copy:
+  ansible.builtin.copy:
     src: "root/{{ item }}"
     dest: "/root/"
     mode: 0775
@@ -85,13 +94,13 @@
     - .config
 
 - name: Add config.fish
-  template:
+  ansible.builtin.template:
     src: root/.config/fish/config.fish.j2
     dest: /root/.config/fish/config.fish
     mode: 0644
 
 - name: Add rsyslog logrotate without delaycompress
-  template:
+  ansible.builtin.template:
     src: "etc/logrotate.d/rsyslog.j2"
     dest: "/etc/logrotate.d/rsyslog"
     mode: 0644
@@ -108,7 +117,7 @@
     user_install: no
 
 - name: Copy MOTD scripts
-  copy:
+  ansible.builtin.copy:
     src: "etc/update-motd.d/{{ item }}"
     dest: "/etc/update-motd.d"
     mode: +x
@@ -118,50 +127,50 @@
     # - 30-apt
 
 - name: Make sure /etc/motd is empty
-  copy:
+  ansible.builtin.copy:
     content: ""
     dest: "/etc/motd"
     mode: 0644
 
 - name: Install unbound
-  when: ansible_distribution == "Debian"
+  when: ansible_distribution == "Debian" and inventory_hostname not in groups['pve']
   apt:
     name: unbound
 
 - name: Add Unbound config
-  when: ansible_distribution == "Debian"
-  template:
+  when: ansible_distribution == "Debian" and inventory_hostname not in groups['pve']
+  ansible.builtin.template:
     src: "etc/unbound/unbound.conf.j2"
     dest: "/etc/unbound/unbound.conf"
     mode: 0644
   notify: unbound restart
 
 - name: Set DNS resolver to Unbound in DHCP config
-  when: ansible_distribution == "Debian"
+  when: ansible_distribution == "Debian" and inventory_hostname not in groups['pve']
   lineinfile:
     dest: /etc/dhcp/dhclient.conf
     regexp: "^prepend domain-name-servers"
     line: "prepend domain-name-servers 127.0.0.1;"
 
 - name: Add vimrc
-  get_url:
+  ansible.builtin.get_url:
     url: https://raw.githubusercontent.com/wklken/vim-for-server/master/vimrc
     dest: /root/.vimrc
 
 - name: Add password to root user
-  user:
+  ansible.builtin.user:
     name: root
     password: "{{ vault.root_password }}"
 
 - name: Add stanislas user
-  user:
+  ansible.builtin.user:
     name: stanislas
     groups: ["sudo"]
     shell: /usr/bin/fish
     password: "{{ vault.stanislas_password }}"
 
 - name: Creates /home/stanislas/.ssh/ directory
-  file:
+  ansible.builtin.file:
     path: /home/stanislas/.ssh/
     state: directory
     owner: stanislas
@@ -169,7 +178,7 @@
     mode: 0700
 
 - name: Set up SSH authorized keys
-  template:
+  ansible.builtin.template:
     src: "ssh/authorized_keys.j2"
     dest: "{{ item }}"
     mode: 0600
@@ -177,15 +186,8 @@
     - /root/.ssh/authorized_keys
     - /home/stanislas/.ssh/authorized_keys
 
-- name: Set swappiness to 0
-  ansible.posix.sysctl:
-    name: vm.swappiness
-    value: "0"
-    state: present
-    reload: yes
-
 - name: Copy unattended-upgrades configuration
-  copy:
+  ansible.builtin.copy:
     src: "etc/apt/apt.conf.d/{{ item }}"
     dest: "/etc/apt/apt.conf.d/{{ item }}"
     mode: 0644
@@ -194,7 +196,7 @@
     - "20auto-upgrades"
 
 - name: Configure private network interface
-  template:
+  ansible.builtin.template:
     src: "etc/network/interfaces.d/priv.cfg.j2"
     dest: "/etc/network/interfaces.d/priv.cfg"
     mode: 0644
@@ -203,7 +205,7 @@
   tags: base.network
 
 - name: Configure private network interface
-  template:
+  ansible.builtin.template:
     src: "etc/udev/rules.d/75-persistent-net-generator.rules.j2"
     dest: "/etc/udev/rules.d/75-persistent-net-generator.rules"
     mode: 0644

@@ -1,8 +1,9 @@
+#jinja2: trim_blocks:False
 {% if ansible_distribution == 'Debian' %}
-deb http://deb.debian.org/debian {{ ansible_distribution_release }} main contrib non-free
-deb http://deb.debian.org/debian {{ ansible_distribution_release }}-updates main contrib non-free
-deb http://deb.debian.org/debian-security/ {{ ansible_distribution_release }}-security main contrib non-free
-deb http://deb.debian.org/debian {{ ansible_distribution_release }}-backports main contrib non-free
+deb http://deb.debian.org/debian {{ ansible_distribution_release }} main contrib {% if ansible_distribution_major_version >= '12' %}non-free-firmware{% else %}non-free{% endif %}
+deb http://deb.debian.org/debian {{ ansible_distribution_release }}-updates main contrib {% if ansible_distribution_major_version >= '12' %}non-free-firmware{% else %}non-free{% endif %}
+deb http://deb.debian.org/debian-security/ {{ ansible_distribution_release }}-security main contrib {% if ansible_distribution_major_version >= '12' %}non-free-firmware{% else %}non-free{% endif %}
+deb http://deb.debian.org/debian {{ ansible_distribution_release }}-backports main contrib {% if ansible_distribution_major_version >= '12' %}non-free-firmware{% else %}non-free{% endif %}
 {% elif ansible_distribution == 'Ubuntu' %}
 deb http://archive.ubuntu.com/ubuntu {{ ansible_distribution_release }} main restricted
 deb http://archive.ubuntu.com/ubuntu {{ ansible_distribution_release }}-updates main restricted
