@@ -1,6 +1,6 @@
 ---
 - name: Install locale-gen
-  apt:
+  ansible.builtin.apt:
     update_cache: true
     name:
       - locales
@@ -21,11 +21,11 @@
   ansible.builtin.template:
     src: "etc/apt/sources.list.j2"
     dest: "/etc/apt/sources.list"
-    mode: 0644
-  notify: update_apt_cache
+    mode: "0644"
+  notify: Update apt cache
 
 - name: Install basic packages
-  apt:
+  ansible.builtin.apt:
     update_cache: true
     name:
       - fish
@@ -89,7 +89,7 @@
   ansible.builtin.copy:
     src: "root/{{ item }}"
     dest: "/root/"
-    mode: 0775
+    mode: "0775"
   with_items:
     - .config
 
@@ -97,24 +97,24 @@
   ansible.builtin.template:
     src: root/.config/fish/config.fish.j2
     dest: /root/.config/fish/config.fish
-    mode: 0644
+    mode: "0644"
 
 - name: Add rsyslog logrotate without delaycompress
   ansible.builtin.template:
     src: "etc/logrotate.d/rsyslog.j2"
     dest: "/etc/logrotate.d/rsyslog"
-    mode: 0644
+    mode: "0644"
 
 - name: Install APT dependencies for MOTD
-  apt:
+  ansible.builtin.apt:
     name:
       - figlet
       - ruby
 
 - name: Install Ruby dependencies for MOTD
-  gem:
+  community.general.gem:
     name: lolcat
-    user_install: no
+    user_install: false
 
 - name: Copy MOTD scripts
   ansible.builtin.copy:
@@ -130,11 +130,11 @@
   ansible.builtin.copy:
     content: ""
     dest: "/etc/motd"
-    mode: 0644
+    mode: "0644"
 
 - name: Install unbound
   when: ansible_distribution == "Debian" and inventory_hostname not in groups['pve']
-  apt:
+  ansible.builtin.apt:
     name: unbound
 
 - name: Add Unbound config
@@ -142,12 +142,12 @@
   ansible.builtin.template:
     src: "etc/unbound/unbound.conf.j2"
     dest: "/etc/unbound/unbound.conf"
-    mode: 0644
-  notify: unbound restart
+    mode: "0644"
+  notify: Restart unbound
 
 - name: Set DNS resolver to Unbound in DHCP config
   when: ansible_distribution == "Debian" and inventory_hostname not in groups['pve']
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/dhcp/dhclient.conf
     regexp: "^prepend domain-name-servers"
     line: "prepend domain-name-servers 127.0.0.1;"
@@ -156,6 +156,7 @@
   ansible.builtin.get_url:
     url: https://raw.githubusercontent.com/wklken/vim-for-server/master/vimrc
     dest: /root/.vimrc
+    mode: "0644"
 
 - name: Add password to root user
   ansible.builtin.user:
@@ -175,13 +176,13 @@
     state: directory
     owner: stanislas
     group: stanislas
-    mode: 0700
+    mode: "0700"
 
 - name: Set up SSH authorized keys
   ansible.builtin.template:
     src: "ssh/authorized_keys.j2"
     dest: "{{ item }}"
-    mode: 0600
+    mode: "0600"
   with_items:
     - /root/.ssh/authorized_keys
     - /home/stanislas/.ssh/authorized_keys
@@ -190,7 +191,7 @@
   ansible.builtin.copy:
     src: "etc/apt/apt.conf.d/{{ item }}"
     dest: "/etc/apt/apt.conf.d/{{ item }}"
-    mode: 0644
+    mode: "0644"
   with_items:
     - "50unattended-upgrades"
     - "20auto-upgrades"
@@ -199,15 +200,15 @@
   ansible.builtin.template:
     src: "etc/network/interfaces.d/priv.cfg.j2"
     dest: "/etc/network/interfaces.d/priv.cfg"
-    mode: 0644
+    mode: "0644"
   when: private_network_address is defined
-  notify: network restart
+  notify: Restart networking
   tags: base.network
 
 - name: Configure private network interface
   ansible.builtin.template:
     src: "etc/udev/rules.d/75-persistent-net-generator.rules.j2"
     dest: "/etc/udev/rules.d/75-persistent-net-generator.rules"
-    mode: 0644
+    mode: "0644"
   when: private_network_interface_mac is defined
   tags: base.network
