@@ -79,6 +79,7 @@
       - gpg
       - dirmngr
       - gpg-agent
+      - bpfcc-tools
 
 - name: Set fish as the root shell
   ansible.builtin.user:
