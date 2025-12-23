@@ -213,3 +213,11 @@
     mode: "0644"
   when: private_network_interface_mac is defined
   tags: base.network
+
+- name: Increase inotify max user instances for k8s/containers
+  ansible.posix.sysctl:
+    name: fs.inotify.max_user_instances
+    value: "1024"
+    sysctl_set: true
+    state: present
+    reload: true
